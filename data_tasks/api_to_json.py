@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 
@@ -14,7 +15,10 @@ class TaskApiJson:
 
         request_url = f'{self.base_url}/search?start_date={date_begin}%20TO%20{date_end}'
         request_header = {'Authorization': f'Bearer {self.access_token}'}
-        dest_file = f'data_files/ITA_events_{date_begin}_{date_end}.json'
+        dest_file = os.path.join(
+            os.path.dirname(__file__),
+            f'../data_files/ITA_events_{date_begin}_{date_end}.json'
+        )
 
         response = requests.get(
             request_url,
@@ -22,6 +26,6 @@ class TaskApiJson:
         )
         if response.status_code == 200:
             with open(dest_file, 'w') as json_file:
-            	json.dump(response.json(), json_file, indent=4)
+                json.dump(response.json(), json_file, indent=4)
         
         print(response.headers)

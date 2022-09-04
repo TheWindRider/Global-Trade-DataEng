@@ -9,7 +9,10 @@ class TaskJsonMongoDB:
     def ita_json_to_mongodb(self, event_start_dates: [str,str]):
         date_begin, date_end = event_start_dates
 
-        source_file = f'data_files/ITA_events_{date_begin}_{date_end}.json'
+        source_file = os.path.join(
+            os.path.dirname(__file__),
+            f'../data_files/ITA_events_{date_begin}_{date_end}.json'
+        )
         if not os.path.exists(source_file):
             return {"error_msg": f"{source_file} not exists"}
 
