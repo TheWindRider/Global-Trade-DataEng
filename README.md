@@ -4,13 +4,16 @@ Data Engineering playground with a broad business motivation to serve SMB with d
 ## Tech Stack
 * Python
 * MongoDB (Atlas)
+* Airflow
 
 ## How to Run
 1. Setup infrastructure: register accounts; create credentials; instantiate database etc., and fill into the data_access.cfg file
 	* [International Trade Administration](https://api.trade.gov/apps/store/ita/resources)
 	* [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
-2. Test run in **project root dir**
-	* one-time data processing `python data_pipeline/one_time_run.py`
+	* Airflow
+2. More than one way to run data processing
+	* one-time test run **in project root dir** `python data_pipeline/one_time_run.py`
+	* regular data processing via Airflow weekly_dag
 
 ## Primary Folders in Repository
 * data_files: datasets not on the cloud will be there
