@@ -31,7 +31,7 @@ def ita_event_op_2(**kwargs):
     ita_event_task_2.ita_json_to_mongodb([date_from_str, date_to_str])
 
 with DAG(
-    'basic',
+    'weekly',
     default_args={
         'depends_on_past': False,
         'email_on_failure': False,
@@ -39,7 +39,7 @@ with DAG(
         'retries': 1,
         'retry_delay': timedelta(minutes=5),
     },
-    description='A starter version of project data pipeline',
+    description='Weekly data processing of project data pipeline',
     start_date=datetime(2022, 8, 1),
     schedule_interval='@weekly',
     catchup=False,
