@@ -17,6 +17,8 @@ class TaskHtmlJson:
     def process_html_table_header(self, html_table):
         html_table_header = html_table.thead.find("tr")
         html_table_cols = [th_item.text for th_item in html_table_header.find_all("th")]
+        # additional field, value being a list of URLs
+        html_table_cols.append("links")
         return html_table_cols
 
     def process_html_table_body(self, html_table):
@@ -24,7 +26,10 @@ class TaskHtmlJson:
         html_table_rows = []
         for html_table_row in html_table_body:
             html_table_row_data = html_table_row.find_all("td")
+            html_table_row_links = html_table_row.find_all("a")
             html_table_row_text = [cell.get_text('; ', strip=True) for cell in html_table_row_data]
+            # additional field, value being a list of URLs
+            html_table_row_text.append([link.get("href") for link in html_table_row_links])
             html_table_rows.append(html_table_row_text)
         return html_table_rows
 
