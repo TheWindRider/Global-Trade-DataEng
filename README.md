@@ -9,11 +9,12 @@ Data Engineering playground with a broad business motivation to serve SMB with d
 ## How to Run
 1. Setup infrastructure: register accounts; create credentials; instantiate database etc., and fill into the data_access.cfg file
 	* [International Trade Administration](https://api.trade.gov/apps/store/ita/resources)
+	* [Commodities API](https://commodities-api.com)
 	* [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
 	* Airflow
 2. More than one way to run data processing
 	* one-time test run **in project root dir** `python data_pipeline/one_time_run.py`
-	* regular data processing via Airflow weekly_dag
+	* regular data processing via Airflow: [daily_dag, weekly_dag, monthly_dag, etc.]
 
 ## Primary Folders in Repository
 * data_files: datasets not on the cloud will be there
