@@ -9,6 +9,7 @@ Data Engineering playground with a broad business motivation to serve SMB with d
 ## How to Run
 1. Setup infrastructure: register accounts; create credentials; instantiate database etc., and fill into the data_access.cfg file
 	* [International Trade Administration](https://api.trade.gov/apps/store/ita/resources)
+	* [Federal Reserve Bank API](https://fred.stlouisfed.org/docs/api/fred/)
 	* [Commodities API](https://commodities-api.com)
 	* [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
 	* Airflow

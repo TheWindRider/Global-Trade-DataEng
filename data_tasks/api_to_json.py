@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from typing import List
 
 class TaskApiJson:
     """
@@ -29,3 +30,38 @@ class TaskApiJson:
                 json.dump(response.json(), json_file, indent=4)
         
         print(response.headers)
+
+    def fred_api_to_json(self, curr_date: str, 
+        price_code: List[str] = [
+            'PCU484121484121', 
+            'PCU4831114831115', 
+            'IC131', 
+            'IS231'
+        ],
+        price_name: List[str] = [
+            'Index_Trucking_Freight', 
+            'Index_Sea_Freight', 
+            'Index_Air_Freight_Inbound', 
+            'Index_Air_Freight_Outbound'
+        ]
+    ):
+        dest_file = os.path.join(
+            os.path.dirname(__file__),
+            f'../data_files/FRED_prices_{curr_date}.json'
+        )
+        series_all = []
+        for series_id, series_name in zip(price_code, price_name):
+            request_url = (
+                f'{self.base_url}/observations?series_id={series_id}&api_key={self.access_token}'
+                f'&sort_order=desc&limit=1&file_type=json'
+            )
+            response = requests.get(request_url)
+            print(response.headers)
+            if response.status_code == 200:
+                series_json = response.json()
+                series_json["series_code"] = series_id
+                series_json["series_name"] = series_name
+                series_all.append(series_json)
+        
+        with open(dest_file, 'w') as json_file:
+            json.dump(series_all, json_file, indent=4)
