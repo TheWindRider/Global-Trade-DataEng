@@ -30,7 +30,7 @@ class TaskApiMongoDB:
             return {"error_msg": f"not able to request data from {request_url}"}
         
         database = self.client["globa-trade"]
-        collection = database["commodity_price"]
+        collection = database["prices"]
         json_data_price = response.json()["data"]
         
         result = collection.bulk_write(
@@ -49,7 +49,7 @@ class TaskApiMongoDB:
                 pymongo.UpdateOne(
                     {"_id": symbol},
                     {"$push": {
-                        "prices": {"date": json_data_price["date"], "price": price}
+                        "prices": {"date": json_data_price["date"], "value": price}
                     }}
                 )
                 for symbol, price in json_data_price["rates"].items() if symbol != "USD"

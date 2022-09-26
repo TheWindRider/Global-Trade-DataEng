@@ -72,3 +72,40 @@ class TaskJsonMongoDB:
         result_dict = result.bulk_api_result
         del result_dict["upserted"]
         print(result_dict)
+
+    def fred_json_to_mongodb(self, execute_month: str):
+        source_file = os.path.join(
+            os.path.dirname(__file__),
+            f'../data_files/FRED_prices_{execute_month}.json'
+        )
+        if not os.path.exists(source_file):
+            return {"error_msg": f"{source_file} not exists"}
+
+        with open(source_file) as json_file:
+            json_data = json.load(json_file)
+
+        database = self.client["globa-trade"]
+        collection = database["prices"]
+        result = collection.bulk_write(
+            [
+                pymongo.UpdateOne(
+                    {"_id": series["series_code"]},
+                    {"$setOnInsert": {
+                        "_id": series["series_code"],
+                        "name": series["series_name"],
+                        "prices": [],
+                    }},
+                    upsert=True
+                )
+                for series in json_data
+            ] + [
+                pymongo.UpdateOne(
+                    {"_id": series["series_code"]},
+                    {"$push": {
+                        "prices": {"$each": series["observations"]}
+                    }}
+                )
+                for series in json_data
+            ]
+        )
+        print(result.bulk_api_result)
