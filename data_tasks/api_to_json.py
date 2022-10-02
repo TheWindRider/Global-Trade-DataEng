@@ -14,8 +14,11 @@ class TaskApiJson:
     def ita_api_to_json(self, event_start_dates: [str,str]):
         date_begin, date_end = event_start_dates
 
-        request_url = f'{self.base_url}/search?start_date={date_begin}%20TO%20{date_end}'
-        request_header = {'Authorization': f'Bearer {self.access_token}'}
+        request_url = (
+            f'{self.base_url}/search?'
+            f'start_date_range%5Bfrom%5D={date_begin}&start_date_range%5Bto%5D={date_end}'
+        )
+        request_header = {'subscription-key': f'{self.access_token}'}
         dest_file = os.path.join(
             os.path.dirname(__file__),
             f'../data_files/ITA_events_{date_begin}_{date_end}.json'

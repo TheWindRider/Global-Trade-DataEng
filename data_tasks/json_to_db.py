@@ -21,13 +21,12 @@ class TaskJsonMongoDB:
             json_data = json.load(json_file)
             json_data_events = [
                 doc for doc in json_data["results"] 
-                if "event_id" in doc and "source" in doc
+                if "id" in doc and "source" in doc
             ]
         # set primary key to avoid duplicates
         for doc in json_data_events:
-            doc.pop("id")
             doc.update({"_id": {
-                "event_id": doc["event_id"], 
+                "event_id": doc["id"], 
                 "source": doc["source"]
             }})
 
@@ -35,7 +34,7 @@ class TaskJsonMongoDB:
         collection = database["trade_events"]
         result = collection.bulk_write([
             pymongo.ReplaceOne({"_id": {
-                "event_id": doc["event_id"], 
+                "event_id": doc["id"], 
                 "source": doc["source"]
             }}, doc, upsert=True)
             for doc in json_data_events
