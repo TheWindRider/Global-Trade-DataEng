@@ -1,5 +1,6 @@
 import os
 import json
+import certifi
 import pymongo
 import requests
 from typing import List
@@ -10,9 +11,14 @@ class TaskApiMongoDB:
     https://commodities-api.com
     """
     def __init__(self, api_config, db_config):
+        ca = certifi.where()
         self.base_url = api_config['API_URL']
         self.access_token = api_config['API_TOKEN']
-        self.client = pymongo.MongoClient(db_config["CONN_URI"], serverSelectionTimeoutMS=5000)
+        self.client = pymongo.MongoClient(
+            db_config["CONN_URI"], 
+            serverSelectionTimeoutMS=5000, 
+            tlsCAFile=ca
+        )
 
     def commodity_api_to_mongodb(self, 
         items_code: List[str] = ['BRENTOIL', 'NG', 'XCU', 'SOYBEAN', 'COTTON', 'RUBBER'],

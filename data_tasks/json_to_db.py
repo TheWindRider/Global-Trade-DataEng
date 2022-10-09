@@ -1,11 +1,17 @@
 import os
 import json
+import certifi
 import pymongo
 
 class TaskJsonMongoDB:
     def __init__(self, config):
+        ca = certifi.where()
         self.conn_url = config["CONN_URI"]
-        self.client = pymongo.MongoClient(self.conn_url, serverSelectionTimeoutMS=5000)
+        self.client = pymongo.MongoClient(
+            self.conn_url, 
+            serverSelectionTimeoutMS=5000, 
+            tlsCAFile=ca
+        )
 
     def ita_json_to_mongodb(self, event_start_dates: [str,str]):
         date_begin, date_end = event_start_dates
