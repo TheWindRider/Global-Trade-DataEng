@@ -4,6 +4,7 @@ Data Engineering playground with a broad business motivation to serve SMB with d
 ## Tech Stack
 * Python
 * MongoDB (Atlas)
+* ElasticSearch
 * Airflow
 
 ## How to Run
@@ -11,7 +12,9 @@ Data Engineering playground with a broad business motivation to serve SMB with d
 	* [International Trade Administration](https://developer.trade.gov/)
 	* [Federal Reserve Bank API](https://fred.stlouisfed.org/docs/api/fred/)
 	* [Commodities API](https://commodities-api.com)
+	* [News API](https://newsapi.org/)
 	* [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/)
+	* ElasticSearch hosted by [Bonsai](https://bonsai.io/)
 	* Airflow
 2. More than one way to run data processing
 	* one-time test run **in project root dir** `python data_pipeline/one_time_run.py`

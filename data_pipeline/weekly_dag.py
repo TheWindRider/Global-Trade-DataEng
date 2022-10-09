@@ -10,11 +10,13 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator 
 from datetime import datetime, timedelta
 from data_tasks.api_to_json import TaskApiJson
+from data_tasks.api_to_db import TaskApiElasticSearch
 from data_tasks.json_to_db import TaskJsonMongoDB
 
 
 ita_event_task_1 = TaskApiJson(config['ITA_TRADE_EVENTS'])
 ita_event_task_2 = TaskJsonMongoDB(config['MONGO_DB'])
+trade_news_task_1 = TaskApiElasticSearch(config['NEWS'], config['ELASTIC_SEARCH'])
 
 def ita_event_op_1(**kwargs):
     date_from = kwargs["execution_date"] + timedelta(weeks=kwargs["week_lead"])
@@ -29,6 +31,13 @@ def ita_event_op_2(**kwargs):
     date_from_str = date_from.strftime('%Y-%m-%d')
     date_to_str = date_to.strftime('%Y-%m-%d')
     ita_event_task_2.ita_json_to_mongodb([date_from_str, date_to_str])
+
+def trade_news_op_1(**kwargs):
+    date_to = kwargs["next_execution_date"]
+    date_from = date_to - timedelta(days=kwargs["day_duration"])
+    date_to_str = date_to.strftime('%Y-%m-%d')
+    date_from_str = date_from.strftime('%Y-%m-%d')
+    trade_news_task_1.news_api_to_es([date_from_str, date_to_str])
 
 with DAG(
     'weekly',
@@ -59,4 +68,12 @@ with DAG(
         provide_context=True,
     )
 
+    t3 = PythonOperator(
+        task_id='trade_news_db',
+        python_callable=trade_news_op_1,
+        op_kwargs={'day_duration': 7},
+        provide_context=True,
+    )
+
     t1 >> t2
+    t3
