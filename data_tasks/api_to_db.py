@@ -103,7 +103,7 @@ class TaskApiElasticSearch:
         result = helpers.bulk(
             self.db_client, 
             [
-                {'_index': 'news_global_trade', '_source': news}
+                {'_index': 'news_global_trade', '_source': news, '_id': news['url']}
                 for news in response.json()["articles"]
             ]
         )
