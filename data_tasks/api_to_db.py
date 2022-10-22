@@ -108,3 +108,35 @@ class TaskApiElasticSearch:
             ]
         )
         print(result)
+
+    def news_api_to_es_dataio(self, 
+        category: List[str] = ["business", "world"],
+        query: str = "international%20AND%20trade%20-finance"
+    ):
+        request_url = (
+            f'{self.api_base_url}'
+            f'?apikey={self.api_token}'
+            f'&q={query}&category={",".join(category)}'
+            f'&language=en'
+        )
+        response = requests.get(request_url)
+        if response.status_code != 200:
+            return {"error_msg": f"not able to request data from {request_url}"}
+
+        news_agg = response.json()["results"]
+        # page through all results iteratively
+        while response.json()["nextPage"] is not None:
+            response = requests.get(request_url + f'&page={response.json()["nextPage"]}')
+            news_agg.extend(response.json()["results"])
+        
+        if not self.db_client.indices.exists(index='news_global_trade'):
+            self.db_client.indices.create(index='news_global_trade')
+
+        result = helpers.bulk(
+            self.db_client, 
+            [
+                {'_index': 'news_global_trade', '_source': news, '_id': news['link']}
+                for news in news_agg
+            ]
+        )
+        print(result)
