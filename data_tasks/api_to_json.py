@@ -13,24 +13,35 @@ class TaskApiJson:
 
     def ita_api_to_json(self, event_start_dates: [str,str]):
         date_begin, date_end = event_start_dates
-
-        request_url = (
-            f'{self.base_url}/search?'
-            f'start_date_range%5Bfrom%5D={date_begin}&start_date_range%5Bto%5D={date_end}'
-        )
-        request_header = {'subscription-key': f'{self.access_token}'}
         dest_file = os.path.join(
             os.path.dirname(__file__),
             f'../data_files/ITA_events_{date_begin}_{date_end}.json'
         )
 
+        request_url = (
+            f'{self.base_url}/search?'
+            f'start_date_range%5Bfrom%5D={date_begin}&start_date_range%5Bto%5D={date_end}'
+            f'&size=50'
+        )
+        request_header = {'subscription-key': f'{self.access_token}'}
         response = requests.get(
             request_url,
             headers=request_header
         )
-        if response.status_code == 200:
-            with open(dest_file, 'w') as json_file:
-                json.dump(response.json(), json_file, indent=4)
+        if response.status_code != 200:
+            return {"error_msg": f"not able to request data from {request_url}"}
+        
+        events_agg = response.json()["results"]
+        # page through all results iteratively
+        while "next_offset" in response.json():
+            response = requests.get(
+                request_url + f'&offset={response.json()["next_offset"]}',
+                headers=request_header
+            )
+            events_agg.extend(response.json()["results"])
+        
+        with open(dest_file, 'w') as json_file:
+            json.dump(events_agg, json_file, indent=4)
         
         print(response.headers)
 

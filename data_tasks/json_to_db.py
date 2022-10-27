@@ -26,7 +26,7 @@ class TaskJsonMongoDB:
         with open(source_file) as json_file:
             json_data = json.load(json_file)
             json_data_events = [
-                doc for doc in json_data["results"] 
+                doc for doc in json_data
                 if "id" in doc and "source" in doc
             ]
         # set primary key to avoid duplicates
