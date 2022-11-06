@@ -37,7 +37,7 @@ def trade_news_op_1(**kwargs):
     date_from = date_to - timedelta(days=kwargs["day_duration"])
     date_to_str = date_to.strftime('%Y-%m-%d')
     date_from_str = date_from.strftime('%Y-%m-%d')
-    trade_news_task_1.news_api_to_es(
+    trade_news_task_1.news_api_to_es_apiorg(
         [date_from_str, date_to_str],
         query='(international OR global) AND (trade OR import OR export)'
     )

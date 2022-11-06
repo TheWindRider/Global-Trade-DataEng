@@ -67,6 +67,7 @@ class TaskApiMongoDB:
 class TaskApiElasticSearch:
     """
     https://newsapi.org
+    https://newsdata.io
     """
     def __init__(self, api_config, db_config):
         self.api_base_url = api_config['API_URL']
@@ -82,7 +83,7 @@ class TaskApiElasticSearch:
             'http_auth': (self.db_user, self.db_password)
         }])
 
-    def news_api_to_es(self, date_range: [str, str], 
+    def news_api_to_es_apiorg(self, date_range: [str, str], 
         query: str = '"international trade" OR "global trade"'
     ):
         date_begin, date_end = date_range
